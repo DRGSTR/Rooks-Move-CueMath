@@ -34,7 +34,7 @@ public class MovePlate : MonoBehaviour
         controller.GetComponent<Game>().SetPosition(reference);
 
         //Switch Current Player
-       controller.GetComponent<Game>().NextTurn();
+       controller.GetComponent<Game>().NextPlayerTurn();
 
         //Destroy the move plates including self
         reference.GetComponent<RookMoves>().DestroyMovePlates();

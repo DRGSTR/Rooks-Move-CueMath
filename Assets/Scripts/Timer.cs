@@ -5,32 +5,66 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
-    public Image timer;
+    [SerializeField]
+    public Image timerImage;
 
-    float time = 1f;
+    [SerializeField]
+    private GameObject clock;
 
-    float sec = 20f;
+    [SerializeField]
+    private GameObject gameOverPanel;
 
-    void Start()
+    [SerializeField]
+    private float maxTimer = 20f;
+
+    private Coroutine timerCoroutine;
+
+    private void Start()
     {
-        
+        // Start the timer coroutine
+        timerCoroutine = StartCoroutine(CountDownTimer());
     }
 
-    public void StartTimer()
+    private IEnumerator CountDownTimer()
     {
-        time = 1f;
-        StartCoroutine("CountDown");
-    }
+        float elapsedTime = 0f;
 
-    IEnumerator CountDown()
-    {
-        while(sec >= 0)
+        while (elapsedTime < maxTimer)
         {
-            time -= 0.05f;
-            timer.fillAmount = time;
-            sec -= 1f;
             yield return new WaitForSeconds(1f);
+            elapsedTime++;
+
+            // Update the fill amount of the timer image
+            timerImage.fillAmount = elapsedTime / maxTimer;
         }
-        
+
+        gameOverPanel.SetActive(true);
+        Game.instance.panelPlayer1.SetActive(false);
+        Game.instance.panelPlayer2.SetActive(false);
+        clock.SetActive(false);
+        // Timer has reached zero, reset it
+        ResetTimer();
+    }
+
+    public void ResetTimer()
+    {
+        // Stop the timer coroutine
+        StopCoroutine(timerCoroutine);
+
+        // Restart the timer coroutine
+        timerCoroutine = StartCoroutine(CountDownTimer());
+    }
+
+    private void OnDisable()
+    {
+        // Stop the timer coroutine when the script is disabled
+        StopCoroutine(timerCoroutine);
+    }
+
+    public void StopTimer()
+    {
+        // Stop the timer coroutine
+        if (timerCoroutine != null)
+            StopCoroutine(timerCoroutine);
     }
 }

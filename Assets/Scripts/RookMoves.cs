@@ -11,13 +11,16 @@ public class RookMoves : MonoBehaviour
     public GameObject controller;
     public GameObject movePlate;
 
+    [SerializeField]
+    private GameObject winningScreen;
+
     //Position for this Chesspiece on the Board
     //The correct position will be set later
     private int xBoard = -1;
     private int yBoard = -1;
 
     //Variable for keeping track of the player it belongs to "black" or "white"
-    private string player;
+    private string player1, player2;
 
     public Sprite rook;
 
@@ -29,7 +32,7 @@ public class RookMoves : MonoBehaviour
         //Take the instantiated location and adjust transform
         SetCoords();
 
-        this.GetComponent<SpriteRenderer>().sprite = rook; player = "black";
+        this.GetComponent<SpriteRenderer>().sprite = rook;
     }
 
     public void SetCoords()
@@ -72,14 +75,18 @@ public class RookMoves : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if (!controller.GetComponent<Game>().IsGameOver() && controller.GetComponent<Game>().GetCurrentPlayer() == player)
-        {
-            //Remove all moveplates relating to previously selected piece
-            DestroyMovePlates();
+        
+         //Remove all moveplates relating to previously selected piece
+         DestroyMovePlates();
 
-            //Create new MovePlates
-            InitiateMovePlates();
+         //Create new MovePlates
+         InitiateMovePlates();
+
+        if (controller != null && Game.instance != null)
+        {
+            Game.instance.NextPlayerTurn();
         }
+
     }
 
     public void DestroyMovePlates()
@@ -143,6 +150,7 @@ public class RookMoves : MonoBehaviour
             Debug.Log("WIN");
             gameObject.SetActive(false);
             SceneManager.LoadScene("RooksMoveCueMath");
+            winningScreen.SetActive(true);
         }
     }
 }

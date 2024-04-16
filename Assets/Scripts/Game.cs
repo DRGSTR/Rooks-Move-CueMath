@@ -7,52 +7,64 @@ using UnityEngine.UI;
 
 public class Game : MonoBehaviour
 {
+    public static Game instance;
     //Reference from Unity IDE
-    public GameObject chesspiece;
-    public Timer p1, p2;
+    public GameObject piece;
+    public Timer timer;
+    private bool player1 = true;//current turn
+
+    public GameObject panelPlayer1;
+    public GameObject panelPlayer2;
 
     //Matrices needed, positions of each of the GameObjects
     //Also separate arrays for the players in order to easily keep track of them all
-    //Keep in mind that the same objects are going to be in "positions" and "playerBlack"/"playerWhite"
     private GameObject[,] positions = new GameObject[8, 8];
-    private GameObject[] playerBlack = new GameObject[16];
-
-    //current turn
-    private string currentPlayer = "black";
+    private GameObject[] rook = new GameObject[1];
 
     //Game Ending
-    private bool gameOver = false;
+    //private bool gameOver = false;
+
+    [SerializeField]
+    private GameObject winningScreen;
 
     //Unity calls this right when the game starts, there are a few built in functions
     //that Unity can call for you
     public void Start()
     {
-        playerBlack = new GameObject[] { Create("black_rook", 7, 7) };
+        winningScreen.SetActive(false);
+        instance = this;
+        rook = new GameObject[] { Create("black_rook", 7, 7) };
 
         //Set all piece positions on the positions board
-        for (int i = 0; i < playerBlack.Length; i++)
+        for (int i = 0; i < rook.Length; i++)
         {
-            SetPosition(playerBlack[i]);
+            SetPosition(rook[i]);
         }
+        panelPlayer1.SetActive(true);
+        panelPlayer2.SetActive(false);
     }
 
+    private void Update()
+    {
+        CheckRookPosition();
+    }
     public GameObject Create(string name, int x, int y)
     {
-        GameObject obj = Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
-        RookMoves cm = obj.GetComponent<RookMoves>(); //We have access to the GameObject, we need the script
-        cm.name = name; //This is a built in variable that Unity has, so we did not have to declare it before
-        cm.SetXBoard(x);
-        cm.SetYBoard(y);
-        cm.Activate(); //It has everything set up so it can now Activate()
+        GameObject obj = Instantiate(piece, new Vector3(0, 0, -1), Quaternion.identity);
+        RookMoves rookMoves = obj.GetComponent<RookMoves>(); //We have access to the GameObject, we need the script
+        rookMoves.name = name; //This is a built in variable that Unity has, so we did not have to declare it before
+        rookMoves.SetXBoard(x);
+        rookMoves.SetYBoard(y);
+        rookMoves.Activate(); //It has everything set up so it can now Activate()
         return obj;
     }
 
     public void SetPosition(GameObject obj)
     {
-        RookMoves cm = obj.GetComponent<RookMoves>();
+        RookMoves rookMoves = obj.GetComponent<RookMoves>();
 
         //Overwrites either empty space or whatever was there
-        positions[cm.GetXBoard(), cm.GetYBoard()] = obj;
+        positions[rookMoves.GetXBoard(), rookMoves.GetYBoard()] = obj;
     }
 
     public void SetPositionEmpty(int x, int y)
@@ -71,27 +83,33 @@ public class Game : MonoBehaviour
         return true;
     }
 
-    public string GetCurrentPlayer()
+    public void CheckRookPosition()
     {
-        return currentPlayer;
+        if (GetPosition(0, 0) == rook[0])
+        {
+            timer.StopTimer();
+            panelPlayer1.SetActive(false);
+            panelPlayer2.SetActive(false);
+            winningScreen.SetActive(true);
+        }
     }
 
-    public bool IsGameOver()
+    public void NextPlayerTurn()
     {
-        return gameOver;
+        if (timer == null)
+        {
+            Debug.LogError("The timer variable is null!");
+            return;
+        }
+
+        timer.ResetTimer();
+        player1 = !player1;
+        panelPlayer1.SetActive(player1);
+        panelPlayer2.SetActive(!player1);
     }
 
-    public void NextTurn()
+    public bool Isplayer1()
     {
-        if (currentPlayer == "white")
-        {
-            p2.StartTimer();
-            currentPlayer = "black";
-        }
-        else
-        {
-            p1.StartTimer();
-            currentPlayer = "white";
-        }
+        return player1;
     }
 }

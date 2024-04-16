@@ -19,7 +19,6 @@ public class RookMoves : MonoBehaviour
     private int yBoard = -1;
 
     //Variable for keeping track of the player it belongs to "black" or "white"
-    private string player1, player2;
 
     public Sprite rook;
 

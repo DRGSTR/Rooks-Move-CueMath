@@ -33,6 +33,7 @@ public class Game : MonoBehaviour
     {
         winningScreen.SetActive(false);
         instance = this;
+        timer.StartTimer();
         rook = new GameObject[] { Create("black_rook", 7, 7) };
 
         //Set all piece positions on the positions board

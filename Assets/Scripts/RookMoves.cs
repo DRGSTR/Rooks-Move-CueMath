@@ -11,7 +11,6 @@ public class RookMoves : MonoBehaviour
     public GameObject controller;
     public GameObject movePlate;
 
-    [SerializeField]
     private GameObject winningScreen;
 
     //Position for this Chesspiece on the Board
@@ -147,9 +146,9 @@ public class RookMoves : MonoBehaviour
     {
         if(collision.tag == "Player")
         {
-            Debug.Log("WIN");
+            //Debug.Log("WIN");
             gameObject.SetActive(false);
-            SceneManager.LoadScene("RooksMoveCueMath");
+            //SceneManager.LoadScene("RooksMoveCueMath");
             winningScreen.SetActive(true);
         }
     }

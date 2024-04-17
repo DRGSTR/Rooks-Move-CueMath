@@ -13,7 +13,7 @@ public class MovePlate : MonoBehaviour
     //Location on the board
     int matrixX;
     int matrixY;
-
+    int clicks = 1;
     //false: movement, true: attacking
     public bool attack = false;
 
@@ -38,6 +38,15 @@ public class MovePlate : MonoBehaviour
 
         //Destroy the move plates including self
         reference.GetComponent<RookMoves>().DestroyMovePlates();
+
+        if(clicks == 2)
+        {
+            if(Game.instance != null)
+            {
+                Game.instance.NextPlayerTurn();
+            }
+            clicks = 1;
+        }
     }
 
     public void SetCoords(int x, int y)

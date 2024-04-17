@@ -18,6 +18,8 @@ public class RookMoves : MonoBehaviour
     private int xBoard = -1;
     private int yBoard = -1;
 
+    int clicks = 0;
+
     //Variable for keeping track of the player it belongs to "black" or "white"
 
     public Sprite rook;
@@ -73,18 +75,12 @@ public class RookMoves : MonoBehaviour
 
     private void OnMouseUp()
     {
-        
-         //Remove all moveplates relating to previously selected piece
-         DestroyMovePlates();
+        clicks++;
 
-         //Create new MovePlates
-         InitiateMovePlates();
-
-        if (controller != null && Game.instance != null)
+        if (clicks == 1)
         {
-            Game.instance.NextPlayerTurn();
+            InitiateMovePlates();
         }
-
     }
 
     public void DestroyMovePlates()
@@ -95,10 +91,14 @@ public class RookMoves : MonoBehaviour
         {
             Destroy(movePlates[i]); //Be careful with this function "Destroy" it is asynchronous
         }
+
+        clicks = 0;
     }
 
     public void InitiateMovePlates()
     {
+        DestroyMovePlates();
+
         this.name = "black_rook";
         LineMovePlate(-1, 0);
         LineMovePlate(0, -1);

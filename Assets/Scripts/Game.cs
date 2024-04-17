@@ -18,7 +18,7 @@ public class Game : MonoBehaviour
 
     //Matrices needed, positions of each of the GameObjects
     //Also separate arrays for the players in order to easily keep track of them all
-    private GameObject[,] positions = new GameObject[8, 8];
+    public GameObject[,] positions = new GameObject[8, 8];
     private GameObject[] rook = new GameObject[1];
 
     //Game Ending

@@ -11,6 +11,9 @@ public class RookMoves : MonoBehaviour
     public GameObject controller;
     public GameObject movePlate;
 
+    int bHeight;
+    int bWidth;
+
     private GameObject winningScreen;
 
     //Position for this Chesspiece on the Board
@@ -28,6 +31,8 @@ public class RookMoves : MonoBehaviour
     {
         //Get the game controller
         controller = GameObject.FindGameObjectWithTag("GameController");
+
+        SetBoardDimensions(controller.GetComponent<Game>().positions.GetLength(0), controller.GetComponent<Game>().positions.GetLength(1));
 
         //Take the instantiated location and adjust transform
         SetCoords();
@@ -104,6 +109,32 @@ public class RookMoves : MonoBehaviour
         LineMovePlate(0, -1);
     }
 
+    public void SetBoardDimensions(int width, int height)
+    {
+        bWidth = width;
+        bHeight = height;
+    }
+
+    private bool CanMoveToPosition(int x, int y)
+    {
+        // Check if the position is within the bounds of the board
+        if (x < 0 || x >= bWidth || y < 0 || y >= bHeight)
+        {
+            return false;
+        }
+
+        Game gm = controller.GetComponent<Game>();
+
+        // Check if there's no piece at the position
+        if (gm.GetPosition(x, y) != null)
+        {
+            return false;
+        }
+
+
+        return true;
+    }
+
     void LineMovePlate(int xIncrement, int yIncrement)
     {
         Game sc = controller.GetComponent<Game>();
@@ -147,8 +178,11 @@ public class RookMoves : MonoBehaviour
         {
             //Debug.Log("WIN");
             gameObject.SetActive(false);
-            //SceneManager.LoadScene("RooksMoveCueMath");
+
             winningScreen.SetActive(true);
+
+            SceneManager.LoadScene("MainMenu");
+            
         }
     }
 }
